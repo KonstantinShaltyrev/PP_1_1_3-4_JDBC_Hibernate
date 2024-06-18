@@ -1,12 +1,14 @@
 package jm.task.core.jdbc.model;
 
+import javax.persistence.*;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Table
 public class User {
     @Id
+    @Column
     private Long id;
 
     @Column
@@ -19,7 +21,6 @@ public class User {
     private Byte age;
 
     public User() {
-
     }
 
     public User(String name, String lastName, Byte age) {
