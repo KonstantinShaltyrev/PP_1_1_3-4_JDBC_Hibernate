@@ -25,9 +25,6 @@ public class Util {
     private static SessionFactory sessionFactory;
 
     public Util() {
-
-        /** 1.1.4 JDBC  */
-
         try {
             Driver driver = new Driver();
 
@@ -36,9 +33,13 @@ public class Util {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        /** 1.1.5 Hibernate */
+    public Connection getConnection() {
+        return connection;
+    }
 
+    public SessionFactory getSessionFactory() {
         java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         try {
@@ -68,13 +69,6 @@ public class Util {
             e.printStackTrace();
         }
 
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 }
