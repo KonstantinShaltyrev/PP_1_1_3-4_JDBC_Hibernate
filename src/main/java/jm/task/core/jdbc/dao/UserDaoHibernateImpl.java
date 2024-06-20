@@ -20,7 +20,6 @@ public class UserDaoHibernateImpl implements UserDao {
             " lastName VARCHAR(45) not null, " +
             " age TINYINT not null)";
 
-//    final static private String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS User";
     private final SessionFactory sessionFactory = new Util().getSessionFactory();
 
     public UserDaoHibernateImpl() {
@@ -69,7 +68,6 @@ public class UserDaoHibernateImpl implements UserDao {
             }
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -91,7 +89,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-
         try (Session session = sessionFactory.openSession()) {
 
             return session.createQuery("FROM User").list();
@@ -117,6 +114,5 @@ public class UserDaoHibernateImpl implements UserDao {
             }
             e.printStackTrace();
         }
-
     }
 }

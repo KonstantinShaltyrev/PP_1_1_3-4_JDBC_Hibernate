@@ -2,6 +2,7 @@ package jm.task.core.jdbc.util;
 
 import com.mysql.cj.jdbc.Driver;
 import jm.task.core.jdbc.model.User;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -12,7 +13,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
 
 public class Util {
 
@@ -40,33 +40,33 @@ public class Util {
     }
 
     public SessionFactory getSessionFactory() {
-        java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
+                Properties settings = new Properties();
 
-        try {
-            Configuration configuration = new Configuration();
-            Properties settings = new Properties();
+                settings.put(Environment.DRIVER, DRIVER);
+                settings.put(Environment.URL, URL);
+                settings.put(Environment.USER, USERNAME);
+                settings.put(Environment.PASS, PASSWORD);
+                settings.put(Environment.DIALECT, DIALECT);
+                settings.put(Environment.SHOW_SQL, "false");
+                settings.put(Environment.FORMAT_SQL, "true");
+                settings.put(Environment.HIGHLIGHT_SQL, "true");
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+                settings.put(Environment.AUTOCOMMIT, "true");
+                settings.put(Environment.HBM2DDL_AUTO, "update");
 
-            settings.put(Environment.DRIVER, DRIVER);
-            settings.put(Environment.URL, URL);
-            settings.put(Environment.USER, USERNAME);
-            settings.put(Environment.PASS, PASSWORD);
-            settings.put(Environment.DIALECT, DIALECT);
-            settings.put(Environment.SHOW_SQL, "false");
-            settings.put(Environment.FORMAT_SQL, "true");
-            settings.put(Environment.HIGHLIGHT_SQL, "true");
-            settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-            settings.put(Environment.AUTOCOMMIT, "true");
-            settings.put(Environment.HBM2DDL_AUTO, "update");
+                configuration.setProperties(settings);
+                configuration.addAnnotatedClass(User.class);
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties())
+                        .build();
 
-            configuration.setProperties(settings);
-            configuration.addAnnotatedClass(User.class);
-            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(configuration.getProperties())
-                    .build();
-
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        } catch (Exception e) {
-            e.printStackTrace();
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
         }
 
         return sessionFactory;
